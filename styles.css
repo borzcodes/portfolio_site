@@ -324,7 +324,7 @@
     padding:12px 12px 12px 18px; margin:0 auto 22px;
   }
   .email-bar-icon{width:16px; height:16px; stroke:var(--muted); flex-shrink:0;}
-  .email-bar-text{font-family:var(--serif); font-weight:500; font-size:14.5px; color:var(--text); white-space:nowrap;}
+  .email-bar-text{font-family:var(--sans); font-weight:400; font-size:14.5px; color:var(--text); white-space:nowrap;}
   .email-bar-copy{
     position:relative; width:32px; height:32px; border-radius:8px; flex-shrink:0;
     border:1px solid var(--border); background:var(--bg-alt);
