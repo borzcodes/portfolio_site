@@ -263,4 +263,25 @@
     });
   });
 
+  /* ---------- standalone "copy email" square (choice alongside Get In Touch) ---------- */
+  const ctaCopyBtn = document.getElementById('ctaCopyBtn');
+  if(ctaCopyBtn){
+    ctaCopyBtn.addEventListener('click', ()=>{
+      const email = ctaCopyBtn.dataset.email;
+      const finish = () => {
+        showToast(`Email copied — ${email}`);
+        ctaCopyBtn.classList.add('copied');
+        ctaCopyBtn.setAttribute('aria-label','Email copied');
+        clearTimeout(ctaCopyBtn._resetTimer);
+        ctaCopyBtn._resetTimer = setTimeout(()=>{
+          ctaCopyBtn.classList.remove('copied');
+          ctaCopyBtn.setAttribute('aria-label','Copy email address');
+        }, 1800);
+      };
+      if(navigator.clipboard && email){
+        navigator.clipboard.writeText(email).then(finish).catch(()=>{});
+      }
+    });
+  }
+
   renderGrid();
