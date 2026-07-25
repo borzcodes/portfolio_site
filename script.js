@@ -1,4 +1,4 @@
-  /* ---------- escape helper (defense-in-depth for innerHTML use below) ---------- */
+/* ---------- escape helper (defense-in-depth for innerHTML use below) ---------- */
   function escapeHTML(str){
     return String(str).replace(/[&<>"']/g, ch => ({
       '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
@@ -228,6 +228,39 @@
     if(e.key !== 'Escape') return;
     if(lightbox.classList.contains('open')) closeLightbox();
     else if(overlay.classList.contains('open')) closeModal();
+  });
+
+  /* ---------- copy-email fallback for mailto: links ---------- */
+  /* Some browsers have no default mail app registered, so mailto: opens a
+     blank tab instead of a compose window. We don't prevent that attempt —
+     it still works correctly for anyone who does have a mail client set up —
+     but we also copy the address to the clipboard as a safety net, so the
+     email is ready to paste wherever the visitor actually checks mail. */
+  let toastTimer = null;
+  function showToast(message){
+    let toast = document.getElementById('emailToast');
+    if(!toast){
+      toast = document.createElement('div');
+      toast.id = 'emailToast';
+      toast.setAttribute('role','status');
+      toast.setAttribute('aria-live','polite');
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> toast.classList.remove('show'), 2600);
+  }
+
+  document.querySelectorAll('a[href^="mailto:"]').forEach(link=>{
+    link.addEventListener('click', ()=>{
+      const email = link.href.replace(/^mailto:/,'').split('?')[0];
+      if(navigator.clipboard && email){
+        navigator.clipboard.writeText(decodeURIComponent(email))
+          .then(()=> showToast(`Email copied — ${decodeURIComponent(email)}`))
+          .catch(()=>{});
+      }
+    });
   });
 
   renderGrid();
